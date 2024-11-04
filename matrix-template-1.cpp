@@ -1,5 +1,5 @@
-
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -11,12 +11,24 @@ private:
 
 public:
   // 1. Read values from stdin into a matrix
-  void readFromStdin() {
+  void readFromFile(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+      cout << "Error opening file: " << filename << endl;
+      return;
+    }
+    
     for (int i = 0; i < SIZE; i++) {
       for (int j = 0; j < SIZE; j++) {
-        cin >> data[i][j];
+        if (!(file >> data[i][j])) {
+          cout << "Error reading from file" << endl;
+          file.close();
+          return;
+        }
       }
     }
+
+    file.close();
   }
 
   // 2. Display a matrix
@@ -89,32 +101,31 @@ public:
 };
 
 int main() {
-  // Example usage:
-  Matrix mat1;
-  cout << "Enter values for Matrix 1:" << endl;
-  mat1.readFromStdin();
-  cout << "Matrix 1:" << endl;
-  mat1.display();
-
-  Matrix mat2;
-  cout << "Enter values for Matrix 2:" << endl;
-  mat2.readFromStdin();
-  cout << "Matrix 2:" << endl;
-  mat2.display();
-
-  Matrix sum = mat1 + mat2;
-  cout << "Sum of matrices:" << endl;
-  sum.display();
-
-  Matrix product = mat1 * mat2;
-  cout << "Product of matrices:" << endl;
-  product.display();
-
-  cout << "Sum of diagonals of Matrix 1: " << mat1.sumOfDiagonals() << endl;
-
-  mat1.swapRows(0, 2);
-  cout << "Matrix 1 after swapping rows:" << endl;
-  mat1.display();
-
-  return 0;
+    Matrix mat1;
+    cout << "Reading Matrix 1 from file..." << endl;
+    mat1.readFromFile("matrix-data1.txt");
+    cout << "Matrix 1:" << endl;
+    mat1.display();
+    
+    Matrix mat2;
+    cout << "Reading Matrix 2 from file..." << endl;
+    mat2.readFromFile("matrix-data2.txt");  // Replace with your actual filename
+    cout << "Matrix 2:" << endl;
+    mat2.display();
+    
+    Matrix sum = mat1 + mat2;
+    cout << "Sum of matrices:" << endl;
+    sum.display();
+    
+    Matrix product = mat1 * mat2;
+    cout << "Product of matrices:" << endl;
+    product.display();
+    
+    cout << "Sum of diagonals of Matrix 1: " << mat1.sumOfDiagonals() << endl;
+    
+    mat1.swapRows(0, 2);
+    cout << "Matrix 1 after swapping rows:" << endl;
+    mat1.display();
+    
+    return 0;
 }
